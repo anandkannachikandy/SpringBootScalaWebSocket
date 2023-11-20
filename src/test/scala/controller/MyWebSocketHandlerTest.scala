@@ -10,7 +10,7 @@ import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
-import org.springframework.web.socket.{BinaryMessage, TextMessage, WebSocketSession}
+import org.springframework.web.socket.{BinaryMessage, CloseStatus, TextMessage, WebSocketSession}
 
 import java.net.{InetSocketAddress, URI}
 
@@ -57,6 +57,11 @@ class MyWebSocketHandlerTest extends AnyFunSpec with BeforeAndAfter {
       val requestJson = mapper.writeValueAsBytes(request)
       myWebSocketHandler.handleBinaryMessage(session, new BinaryMessage(requestJson))
       verify(session).sendMessage(new TextMessage("Received binary message"))
+    }
+    it("logs connection closure") {
+      when(session.getRemoteAddress).thenReturn(mock[InetSocketAddress])
+      when(session.getUri).thenReturn(mock[URI])
+      myWebSocketHandler.afterConnectionClosed(session,status = CloseStatus.NORMAL)
     }
   }
 
