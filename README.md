@@ -1,2 +1,2 @@
 # SpringBootScalaWebSocket
-Springboot project with websocket
+SpringBoot project with websocket
